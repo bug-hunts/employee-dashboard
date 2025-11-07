@@ -1,0 +1,58 @@
+.app-root {
+  display: grid;
+  grid-template-rows: 56px 1fr; /* header + content */
+  height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #111827; /* dark gray */
+  color: #fff;
+  padding: 12px 20px;
+  height: 56px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}
+
+/* Main area with sidebar */
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr; /* sidebar + main */
+  min-height: 0; /* allow child overflow handling */
+}
+
+/* Sidebar */
+.app-sidebar {
+  background: #111827; /* gray-900 */
+  color: #e5e7eb; /* gray-200 */
+  padding: 16px;
+  border-right: 1px solid #1f2937; /* gray-800 */
+}
+
+.app-sidebar nav a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: 6px;
+}
+
+.app-sidebar nav a:hover {
+  background: #1f2937; /* gray-800 */
+}
+
+/* Content wrapper */
+.app-content {
+  padding: 16px;
+  overflow: auto;
+}
