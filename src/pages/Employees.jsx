@@ -1,6 +1,5 @@
-import { use, useEffect, useState } from "react";
-
-
+import { useEffect, useState } from "react";
+import Modal from "../components/Modal";
 
 export default function Employees(){
 
@@ -9,6 +8,17 @@ export default function Employees(){
 
     //create a search term state
     const [searchTerm, setSearchTerm] = useState("");
+
+    //modal control
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    //form structure
+    const [formData, setFormData] = useState({
+        name: "",
+        role: "",
+        department: "",
+        status: "Active",
+    });
 
     //stimulate api fetching
 
@@ -24,6 +34,38 @@ export default function Employees(){
             setEmployees (mockData);
         }, 1000);
     }, []);
+
+    //handle form input changes
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    }
+
+    //handle form submission
+    const handleAddEmployee = (e) => {
+        e.preventDefault();
+
+
+        //validation
+        if (!formData.name || !formData.role || !formData.department) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+
+        const newEmployee = {
+            id: Date.now(),
+            ...formData,
+        };
+
+        setEmployees([...employees, newEmployee]);
+        setIsModalOpen(false);
+         setFormData({ name: "", role: "", department: "", status: "Active" });
+        
+        };
 
     //handle delete
          const handleDelete = (id) => {
@@ -43,10 +85,11 @@ export default function Employees(){
     return(
 
         <div className="container">
-            <div className="employee-header"> 
+            <div className="employees-header"> 
 
             <h1 style={{ marginBottom: 12 }}>Employees</h1>
-            <button className="button" style={{ marginBottom: 12 }}>Add Employee</button>
+            
+            <button className="button" onClick={() => setIsModalOpen(true)}>+ Add Employee</button>
 
              </div>
 
@@ -103,8 +146,37 @@ export default function Employees(){
                 
             </table>
 
-        </div>
-
-
-    );
+         {/* Modal for Add Employee  */}
+           <Modal isOpen={isModalOpen} title="Add Employee" onClose={() => setIsModalOpen(false)}>
+        <form onSubmit={handleAddEmployee}>
+          <input
+            type="text"
+            name="name"
+            placeholder="Employee Name"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="role"
+            placeholder="Role / Job Title"
+            value={formData.role}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            name="department"
+            placeholder="Department"
+            value={formData.department}
+            onChange={handleInputChange}
+          />
+          <select name="status" value={formData.status} onChange={handleInputChange}>
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+          <button type="submit" className="submit">Add Employee</button>
+        </form>
+      </Modal>
+    </div>
+  );
 }
