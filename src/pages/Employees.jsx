@@ -11,6 +11,12 @@ export default function Employees(){
 
     //modal control
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    //edit mode or not
+    const [EditMode, setEditMode] = useState(false);
+
+    //track which employee is being edited  
+    const [currentEmployeeId, setCurrentEmployeeId] = useState(null);
     
     //form structure
     const [formData, setFormData] = useState({
@@ -45,7 +51,7 @@ export default function Employees(){
     }
 
     //handle form submission
-    const handleAddEmployee = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
 
@@ -55,6 +61,16 @@ export default function Employees(){
             return;
         }
 
+        if(EditMode){
+            
+            const updatedEmployees = employees.map((emp) =>
+                emp.id === currentEmployeeId ? { ...emp, ...formData } : emp
+                );
+            setEmployees (updatedEmployees);
+             setEditMode(false);
+            setCurrentEmployeeId(null);
+        
+        } else {
 
         const newEmployee = {
             id: Date.now(),
@@ -62,10 +78,29 @@ export default function Employees(){
         };
 
         setEmployees([...employees, newEmployee]);
-        setIsModalOpen(false);
+
+        }
+
          setFormData({ name: "", role: "", department: "", status: "Active" });
+          setIsModalOpen(false);
         
         };
+
+         //handle edit
+            const handleEdit = (employee) => {
+
+                
+        setFormData({
+        name: employee.name,
+        role: employee.role,
+        department: employee.department,
+        status: employee.status,
+        });
+        setEditMode(true);
+        setCurrentEmployeeId(employee.id);
+        setIsModalOpen(true);
+        };
+
 
     //handle delete
          const handleDelete = (id) => {
@@ -135,7 +170,7 @@ export default function Employees(){
                         </td>
 
                         <td>
-                            <button className="table-button">Edit</button>
+                            <button className="table-button" onClick={() => handleEdit(emp)}>Edit</button>
                             <button className="table-button danger" onClick={() => handleDelete(emp.id)}>Delete</button>
                         </td>
                     </tr>
@@ -147,8 +182,17 @@ export default function Employees(){
             </table>
 
          {/* Modal for Add Employee  */}
-           <Modal isOpen={isModalOpen} title="Add Employee" onClose={() => setIsModalOpen(false)}>
-        <form onSubmit={handleAddEmployee}>
+           <Modal
+            isOpen={isModalOpen}
+            title={EditMode ? "Edit Employee" : "Add Employee"}
+            onClose={() => {
+            setIsModalOpen(false);
+            setEditMode(false);
+            setFormData({ name: "", role: "", department: "", status: "Active" });
+                }}
+                    >
+
+          <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
@@ -174,7 +218,9 @@ export default function Employees(){
             <option value="Active">Active</option>
             <option value="Inactive">Inactive</option>
           </select>
-          <button type="submit" className="submit">Add Employee</button>
+          <button type="submit" className="submit">
+            {EditMode ? "Save Changes" : "Add Employee"}
+          </button>
         </form>
       </Modal>
     </div>
