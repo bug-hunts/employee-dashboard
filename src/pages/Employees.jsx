@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 import Modal from "../components/Modal";
+
 
 export default function Employees(){
 
@@ -26,20 +28,26 @@ export default function Employees(){
         status: "Active",
     });
 
+    const API_URL = "http://localhost:5000/employees";
+
     //stimulate api fetching
 
     useEffect(() => {
-        setTimeout(() => { 
 
-            const mockData = [  
-                { id: 1, name: "John Doe", role: "Engineer", department: "Engineering", status: "Active" },
-                { id: 2, name: "Jane Smith", role: "Marketing Manager", department: "Marketing", status: "Inactive" },
-                { id: 3, name: "Alice Johnson", role: "Sales Executive", department: "Sales", status: "Active" },
-                { id: 4, name: "Bob Brown", role: "HR Officer", department: "HR", status: "Active" },
-                ];
-            setEmployees (mockData);
-        }, 1000);
-    }, []);
+        const fetchEmployees = async () => {
+
+            try{
+                const res = await axios.get (API_URL);
+                setEmployees (res.data);
+            } catch(err)
+            {
+                console.error("Error fetching employees:", err);
+            }
+        };
+
+        fetchEmployees();
+
+        }, []);
 
     //handle form input changes
     const handleInputChange = (e) => {
@@ -51,7 +59,7 @@ export default function Employees(){
     }
 
     //handle form submission
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
 
@@ -61,32 +69,51 @@ export default function Employees(){
             return;
         }
 
+        try{
+
         if(EditMode){
             
-            const updatedEmployees = employees.map((emp) =>
-                emp.id === currentEmployeeId ? { ...emp, ...formData } : emp
-                );
-            setEmployees (updatedEmployees);
-             setEditMode(false);
+            await axios.put(`${API_URL}/${currentEmployeeId}`, formData);
+            setEmployees((prev) =>
+                prev.map((emp) =>
+                emp.id === currentEmployeeId ? {...formData, id: emp.id } : emp
+                )
+            );
+
+            setEditMode(false);
             setCurrentEmployeeId(null);
         
         } else {
 
-        const newEmployee = {
-            id: Date.now(),
-            ...formData,
-        };
-
-        setEmployees([...employees, newEmployee]);
-
+            const res = await axios.post(API_URL, formData);
+            setEmployees([...employees, res.data]);
         }
-
-         setFormData({ name: "", role: "", department: "", status: "Active" });
-          setIsModalOpen(false);
         
-        };
+        setFormData({ name: "", role:"", department: "", status: "Active"});
+        setIsModalOpen(false);
 
-         //handle edit
+    }   catch(err){
+        console.error("Error saving employee: ", err);
+    }
+
+    };
+
+
+    //handle delete
+         const handleDelete = async (id) => {
+         const confirmed = window.confirm("Are you sure you want to delete this employee?");
+            if (!confirmed) return;
+
+         try {
+        await axios.delete(`${API_URL}/${id}`);
+
+           setEmployees((prevEmployees) => prevEmployees.filter((emp) => emp.id !== id));    
+         } catch (err) {
+        console.error("Error deleting employee: ", err);
+         }
+         };
+
+            //handle edit
             const handleEdit = (employee) => {
 
                 
@@ -102,20 +129,10 @@ export default function Employees(){
         };
 
 
-    //handle delete
-         const handleDelete = (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this employee?");
-    if (confirmed) {
-      setEmployees(employees.filter((emp) => emp.id !== id));
-    }
-  };
-
        // Handle search filtering
           const filteredEmployees = employees.filter((emp) =>
        emp.name.toLowerCase().includes(searchTerm.toLowerCase())
              );
-
-
 
     return(
 
@@ -157,7 +174,7 @@ export default function Employees(){
                     ) :
                     
                     (
-                    filteredEmployees.map((emp) => (
+                    filteredEmployees?.map((emp) => (
                         
                     <tr key={emp.id}>   
                         <td>{emp.name}</td>
@@ -226,3 +243,5 @@ export default function Employees(){
     </div>
   );
 }
+
+

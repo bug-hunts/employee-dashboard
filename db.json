@@ -1,0 +1,32 @@
+{
+  "employees": [
+    {
+      "name": "John Doe",
+      "role": "Engineer",
+      "department": "Engineering",
+      "status": "Active",
+      "id": "1"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "role": "Marketing Manager",
+      "department": "Marketing",
+      "status": "Inactive"
+    },
+    {
+      "id": "3",
+      "name": "Alice Johnson",
+      "role": "Sales Executive",
+      "department": "Sales",
+      "status": "Active"
+    },
+    {
+      "id": "4",
+      "name": "Bob Brown",
+      "role": "HR Officer",
+      "department": "HR",
+      "status": "Active"
+    }
+  ]
+}
