@@ -27,6 +27,13 @@
       "role": "HR Officer",
       "department": "HR",
       "status": "Active"
+    },
+    {
+      "id": "ef42",
+      "name": "Aniruddha",
+      "role": "employee",
+      "department": "HR",
+      "status": "Active"
     }
   ]
 }

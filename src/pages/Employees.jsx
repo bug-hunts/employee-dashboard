@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "../components/Modal";
 
-
 export default function Employees(){
 
     //create a state variable for employees
@@ -28,26 +27,25 @@ export default function Employees(){
         status: "Active",
     });
 
-    const API_URL = "http://localhost:5000/employees";
+        const API_URL = import.meta.env.VITE_API_BASE_URL;
+        console.log(import.meta.env.VITE_API_BASE_URL, "Hi");
+
+    
 
     //stimulate api fetching
 
-    useEffect(() => {
+      useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const res = await axios.get(API_URL);
+        setEmployees(Array.isArray(res.data) ? res.data : []);
+      } catch (err) {
+        console.error("Error fetching employees:", err);
+      }
+    };
 
-        const fetchEmployees = async () => {
-
-            try{
-                const res = await axios.get (API_URL);
-                setEmployees (res.data);
-            } catch(err)
-            {
-                console.error("Error fetching employees:", err);
-            }
-        };
-
-        fetchEmployees();
-
-        }, []);
+    fetchEmployees();
+  }, []);
 
     //handle form input changes
     const handleInputChange = (e) => {
@@ -130,14 +128,17 @@ export default function Employees(){
 
 
        // Handle search filtering
-          const filteredEmployees = employees.filter((emp) =>
+            const filteredEmployees = employees.filter((emp) =>
        emp.name.toLowerCase().includes(searchTerm.toLowerCase())
              );
 
     return(
 
+        
+
         <div className="container">
             <div className="employees-header"> 
+
 
             <h1 style={{ marginBottom: 12 }}>Employees</h1>
             
@@ -243,5 +244,4 @@ export default function Employees(){
     </div>
   );
 }
-
 
