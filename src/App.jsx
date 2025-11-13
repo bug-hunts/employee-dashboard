@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import './styles/global.css'
-import './styles/layout.css'
-import './styles/employees.css'
+import {AppProvider} from './context/AppContext.jsx';
+
 import Header from './components/Header.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import Dashboard from './pages/Dashboard.jsx'
@@ -9,12 +8,14 @@ import Employees from './pages/Employees.jsx'
 import Settings from './pages/settings.jsx'
 
 import './styles/modal.css';
+import './styles/global.css'
+import './styles/layout.css'
+import './styles/employees.css'
 
 export default function App() {
 
-
   return (
-
+  <AppProvider>
     <Router>
         
       <div className="app-root">
@@ -37,6 +38,7 @@ export default function App() {
     
     </div>
     </Router>
+  </AppProvider>
 
   );
 }
