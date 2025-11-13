@@ -81,3 +81,26 @@
   font-weight: 600;
   padding-left: 8px;
 }
+
+body.dark {
+  background: #111827;
+  color: #e5e7eb;
+}
+
+body.dark .app-sidebar {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark .app-content {
+  background: #1f2937;
+}
+
+body.dark .employee-table {
+  background: #1f2937;
+  color: #e5e7eb;
+}
+
+body.dark .employee-table th {
+  background: #374151;
+}
